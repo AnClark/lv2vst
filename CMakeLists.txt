@@ -80,13 +80,15 @@ set (INCLUDES
 
 # TODO: Allow user to specify BUNDLES and WHITELIST here (line:123)
 
-set (PTHREAD_CFLAGS "-D__CLEANUP_C -DPTW32_BUILD_INLINED -DPTW32_STATIC_LIB -DHAVE_PTW32_CONFIG_H")
-add_library (pthread_w32 STATIC
-  lib/pthreads-w32/pthread.c
-)
-target_include_directories (pthread_w32 PRIVATE "lib/pthreads-w32/")
-target_compile_options(pthread_w32 PRIVATE ${PTHREAD_CFLAGS})
-target_compile_options(pthread_w32 PRIVATE -fvisibility=hidden -mstackrealign -O3)
+if (WIN32)
+  set (PTHREAD_CFLAGS "-D__CLEANUP_C -DPTW32_BUILD_INLINED -DPTW32_STATIC_LIB -DHAVE_PTW32_CONFIG_H")
+  add_library (pthread_w32 STATIC
+    lib/pthreads-w32/pthread.c
+  )
+  target_include_directories (pthread_w32 PRIVATE "lib/pthreads-w32/")
+  target_compile_options(pthread_w32 PRIVATE ${PTHREAD_CFLAGS})
+  target_compile_options(pthread_w32 PRIVATE -fvisibility=hidden -mstackrealign -O3)
+endif ()
 
 
 if (APPLE)
@@ -144,10 +146,12 @@ add_library (${PROJECT_NAME} SHARED
 target_include_directories (${PROJECT_NAME} PRIVATE include/)
 target_include_directories (${PROJECT_NAME} PRIVATE lib/sord/)
 target_include_directories (${PROJECT_NAME} PRIVATE lib/lilv/)
-target_include_directories (${PROJECT_NAME} PRIVATE "lib/pthreads-w32/")
 target_compile_options (${PROJECT_NAME} PRIVATE ${PLATFORM_CXXFLAGS})
 target_link_options (${PROJECT_NAME} PRIVATE ${VSTLDFLAGS} ${PLATFORM_LDFLAGS})
-target_link_libraries(${PROJECT_NAME} PUBLIC pthread_w32 ${LOADLIBES})
+if (WIN32)
+  target_include_directories (${PROJECT_NAME} PRIVATE "lib/pthreads-w32/")
+  target_link_libraries(${PROJECT_NAME} PUBLIC pthread_w32 ${LOADLIBES})
+endif ()
 
 
 if (CMAKE_BUILD_TYPE MATCHES "debug")
