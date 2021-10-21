@@ -489,7 +489,7 @@ void LV2Vst::get_parameter_name (int32_t i, char* label)
 	if (l) {
 		switch (_compat_mode) {
 			case Juicy:
-				strncpyn (label, l->name, 256);
+				strncpyn (label, l->name, 255);
 				break;
 			default:
 			case Strict:
