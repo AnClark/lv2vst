@@ -84,28 +84,35 @@ Supported LV2 Features
 * Latency reporting (port property)
 
 
-Build and Install
+Build and Install via GNU Make
 -----------------
 
-Compiling lv2vst requires gnu-make and the GNU c/c++-compiler.
-Windows (.dll) versions are to be cross-compiled on GNU/Linux using mingw.
+Compiling lv2vst requires gnu-make and the GNU c/c++-compiler. 
+
+Windows (.dll) versions are to be cross-compiled on GNU/Linux using MinGW. I (AnClark) recommended you to build on Msys2. 
+
+- Build on Linux:
 
 ```bash
   make
 ```
 
-```bash
-  make XWIN=x86_64-w64-mingw32 clean all
-```
+- Build on Windows (via Msys2). Run `mingw64.exe` or `mingw32.exe` in your Msys2's install path to setup build environment.
 
 ```bash
-  make XWIN=i686-w64-mingw32 clean all
+  # Install build essentials
+  pacman -Sy mingw-w64-x86_64-gcc make      # 64-bit
+  pacman -Sy mingw-w64-i686-gcc make        # 32-bit
+
+  # Clean and build
+  make XWIN=x86_64-w64-mingw32 clean all    # 64-bit
+  make XWIN=i686-w64-mingw32 clean all      # 32-bit
 ```
 
-Copy the resulting lv2vst.so lv2vst.dll into a folder where the VST host finds it.
+Copy the resulting `lv2vst.so`  or `lv2vst.dll` into a folder where the VST host finds it. On Windows, `lv2vst.dll` is statically-linked, no extra files (especially `libwinpthread-1.dll`) needed.
+
 For macOS/OSX, a .vst bundle folder needs to be created, with the plugin in
 Contents/MacOS/, see `make osxbundle`.
-
 
 lv2vst can be used multiple-times in dedicated folders, each with specific
 whitelist to expose plugin-collections. e.g.
@@ -118,6 +125,24 @@ whitelist to expose plugin-collections. e.g.
 	lv2ls | grep URI-A-prefix > ~/.vst/plugin-A/.whitelist
 	lv2ls | grep URI-B-prefix > ~/.vst/plugin-B/.whitelist
 ```
+
+## Build and Install via CMake
+
+I (AnClark) also CMake-ized the original Makefile. Using CMake can be more reliable on different platform, and can be much faster so you can have a better experience on debugging.
+
+Run these commands to configure and build:
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+Built files are called `liblv2vst.so` or `liblv2vst.dll`.
+
+**NOTICE:**
+
+- CMake is not implemented on macOS, as I can't afford a MacBook Pro :cry:
+- Built DLL file will link against `libwinpthread-1.dll`, so it's not suitable for distribution. If you want to distribute your own Win32 build, try "Build and Install via GNU Make" above.
 
 Caveats
 -------
