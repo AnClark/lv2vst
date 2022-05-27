@@ -89,7 +89,7 @@ Build and Install via GNU Make
 
 Compiling lv2vst requires gnu-make and the GNU c/c++-compiler. 
 
-Windows (.dll) versions are to be cross-compiled on GNU/Linux using MinGW. I (AnClark) recommended you to build on Msys2. 
+Windows (.dll) versions are to be cross-compiled on GNU/Linux using MinGW. I (AnClark) suggest you to build on Msys2. 
 
 - Build on Linux:
 
@@ -109,7 +109,7 @@ Windows (.dll) versions are to be cross-compiled on GNU/Linux using MinGW. I (An
   make XWIN=i686-w64-mingw32 clean all      # 32-bit
 ```
 
-Copy the resulting `lv2vst.so`  or `lv2vst.dll` into a folder where the VST host finds it. On Windows, `lv2vst.dll` is statically-linked, no extra files (especially `libwinpthread-1.dll`) needed.
+You will get either `lv2vst.so` or `lv2vst.dll`. Copy it into your host's search path. On Windows, `lv2vst.dll` is statically-linked, no extra files (especially `libwinpthread-1.dll`) needed.
 
 For macOS/OSX, a .vst bundle folder needs to be created, with the plugin in
 Contents/MacOS/, see `make osxbundle`.
@@ -137,11 +137,11 @@ cmake -S . -B build
 cmake --build build
 ```
 
-Built files are called `liblv2vst.so` or `liblv2vst.dll`.
+Output files are called `liblv2vst.so` or `liblv2vst.dll`.
 
 **NOTICE:**
 
-- CMake is not implemented on macOS, as I can't afford a MacBook Pro :cry:
+- CMake build is not implemented on macOS, as I can't afford a MacBook Pro :cry:
 - Built DLL file will link against `libwinpthread-1.dll`, so it's not suitable for distribution. If you want to distribute your own Win32 build, try "Build and Install via GNU Make" above.
 
 Caveats
